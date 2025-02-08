@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
-contract OperatorRangeManager {
-    address public owner;
-    uint256 constant MAX_RANGE = 600000; // Maximum range value
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract OperatorRangeManager is Ownable {
+    uint256 public constant MAX_RANGE = 600000; // Maximum range value
 
     struct OperatorRange {
         uint256 start;
@@ -13,13 +14,7 @@ contract OperatorRangeManager {
     mapping(address => OperatorRange) public operatorRanges; // Using operator address as the index
     address[] public operators; // Storing all registered operator addresses
 
-    constructor() {
-        owner = msg.sender;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
-        _;
+    constructor(address _owner) Ownable(_owner) {
     }
 
     function registerOperator(address operatorAddress, uint256 start, uint256 end) public onlyOwner {
